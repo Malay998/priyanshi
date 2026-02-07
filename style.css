@@ -1,0 +1,127 @@
+body{
+margin:0;
+overflow:hidden;
+font-family:Arial, sans-serif;
+background:radial-gradient(circle at center,#1a0010,#000);
+color:white;
+}
+
+/* START */
+#start{
+position:fixed;
+inset:0;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:black;
+z-index:10;
+}
+
+button{
+padding:18px 45px;
+font-size:22px;
+border:none;
+border-radius:50px;
+background:linear-gradient(90deg,#ff0080,#ff4d00);
+color:white;
+cursor:pointer;
+box-shadow:0 0 30px #ff0080;
+transition:.3s;
+}
+
+button:hover{
+transform:scale(1.15);
+box-shadow:0 0 60px #ff0080;
+}
+
+/* GAME */
+#game{
+position:fixed;
+inset:0;
+}
+
+#basket{
+position:absolute;
+bottom:40px;
+font-size:70px;
+}
+
+/* HEART */
+.heart{
+position:absolute;
+font-size:38px;
+filter:drop-shadow(0 0 10px hotpink);
+}
+
+/* MASSIVE COUNTER */
+#megaCounter{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+display:flex;
+align-items:flex-end;
+gap:15px;
+pointer-events:none;
+}
+
+/* BIG NUMBER */
+#scoreNumber{
+font-size:160px;
+font-weight:900;
+
+background:linear-gradient(180deg,#ff0080,#ffcc00,#00ffe0);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+text-shadow:
+0 0 20px #ff0080,
+0 0 40px #ff0080,
+0 0 80px #ff0080;
+
+animation: counterIdle 3s ease-in-out infinite;
+}
+
+#scoreTarget{
+font-size:60px;
+opacity:.8;
+margin-bottom:30px;
+}
+
+/* IDLE FLOAT */
+@keyframes counterIdle{
+0%,100%{ transform:translateY(0px); }
+50%{ transform:translateY(-10px); }
+}
+
+/* SCORE HIT ANIMATION */
+.counterHit{
+animation: counterHitAnim .35s ease;
+}
+
+@keyframes counterHitAnim{
+0%{ transform:scale(1); }
+50%{ transform:scale(1.4); }
+100%{ transform:scale(1); }
+}
+
+/* SCREEN FLASH */
+#flash{
+position:fixed;
+inset:0;
+background:white;
+opacity:0;
+pointer-events:none;
+}
+
+/* FINAL */
+#final{
+display:none;
+position:fixed;
+inset:0;
+background:black;
+justify-content:center;
+align-items:center;
+font-size:60px;
+}
