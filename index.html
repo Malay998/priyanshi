@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Love Quest Ultimate</title>
+
+<style>
+body{
+margin:0;
+overflow:hidden;
+font-family:Arial;
+background:black;
+color:white;
+}
+
+/* Start Screen */
+#start{
+position:fixed;
+inset:0;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:black;
+z-index:10;
+}
+
+/* Game */
+#game{
+position:fixed;
+inset:0;
+}
+
+/* Player */
+#player{
+position:absolute;
+font-size:40px;
+}
+
+/* Objects */
+.obj{
+position:absolute;
+font-size:30px;
+}
+
+/* UI */
+#ui{
+position:fixed;
+top:10px;
+left:10px;
+font-size:20px;
+z-index:5;
+}
+
+/* Final */
+#final{
+display:none;
+position:fixed;
+inset:0;
+background:black;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+#final img{
+width:85%;
+max-width:400px;
+border-radius:25px;
+animation:zoom 3s ease forwards;
+}
+
+@keyframes zoom{
+from{ transform:scale(.5); opacity:0; }
+to{ transform:scale(1); opacity:1; }
+}
+
+/* Shake */
+.shake{
+animation:shake .3s;
+}
+@keyframes shake{
+0%{ transform:translate(0,0); }
+25%{ transform:translate(6px,0); }
+50%{ transform:translate(-6px,0); }
+75%{ transform:translate(6px,0); }
+100%{ transform:translate(0,0); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="start">
+<h1>❤️ LOVE QUEST ULTIMATE ❤️</h1>
+<button onclick="startGame()">START</button>
+</div>
+
+<div id="ui">
+Score: <span id="score">0</span>
+<br>
+Lives: <span id="lives">3</span>
+</div>
+
+<div id="game">
+<div id="player">💖</div>
+</div>
+
+<div id="final">
+<h2>❤️ FOREVER ❤️</h2>
+<img src="couple.jpg">
+</div>
+
+<script>
+
+let player=document.getElementById("player");
+let score=0;
+let lives=3;
+let speed=2;
+
+/* PLAYER CONTROL TOUCH + MOUSE */
+document.addEventListener("mousemove",move);
+document.addEventListener("touchmove",(e)=>{
+move(e.touches[0]);
+});
+
+function move(e){
+player.style.left=(e.clientX-20)+"px";
+player.style.top=(e.clientY-20)+"px";
+}
+
+/* START */
+function startGame(){
+document.getElementById("start").style.display="none";
+setInterval(spawnObj,800);
+}
+
+/* SPAWN OBJECT */
+function spawnObj(){
+
+let obj=document.createElement("div");
+obj.className="obj";
+
+/* Type */
+let type=Math.random();
+
+if(type<0.65){
+obj.innerHTML="💖";
+obj.dataset.type="good";
+}
+else if(type<0.9){
+obj.innerHTML="💔";
+obj.dataset.type="bad";
+}
+else{
+obj.innerHTML="🛡";
+obj.dataset.type="shield";
+}
+
+obj.style.left=Math.random()*window.innerWidth+"px";
+obj.style.top="-40px";
+
+document.getElementById("game").appendChild(obj);
+
+/* FALL */
+let fall=setInterval(()=>{
+
+obj.style.top=(obj.offsetTop+speed)+"px";
+
+/* COLLISION */
+if(collide(player,obj)){
+handleHit(obj.dataset.type);
+obj.remove();
+clearInterval(fall);
+}
+
+if(obj.offsetTop>window.innerHeight){
+obj.remove();
+clearInterval(fall);
+}
+
+},16);
+}
+
+/* COLLISION */
+function collide(a,b){
+let ar=a.getBoundingClientRect();
+let br=b.getBoundingClientRect();
+
+return !(
+ar.top>br.bottom ||
+ar.bottom<br.top ||
+ar.right<br.left ||
+ar.left>br.right
+);
+}
+
+/* HIT HANDLE */
+function handleHit(type){
+
+if(type=="good"){
+score++;
+}
+else if(type=="bad"){
+lives--;
+shakeScreen();
+slowMo();
+}
+else if(type=="shield"){
+lives++;
+}
+
+updateUI();
+checkGame();
+}
+
+/* UI */
+function updateUI(){
+scoreEl.innerText=score;
+livesEl.innerText=lives;
+}
+
+/* SHAKE */
+function shakeScreen(){
+document.body.classList.add("shake");
+setTimeout(()=>document.body.classList.remove("shake"),300);
+}
+
+/* SLOW MOTION */
+function slowMo(){
+speed=1;
+setTimeout(()=>speed=2,1200);
+}
+
+/* GAME END */
+function checkGame(){
+if(lives<=0){
+location.reload();
+}
+if(score>=25){
+win();
+}
+}
+
+function win(){
+document.getElementById("final").style.display="flex";
+startParticles();
+}
+
+/* PARTICLES */
+function startParticles(){
+let canvas=document.createElement("canvas");
+document.body.appendChild(canvas);
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let ctx=canvas.getContext("2d");
+
+setInterval(()=>{
+ctx.fillStyle="rgba(0,0,0,.2)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+for(let i=0;i<10;i++){
+ctx.fillStyle=`hsl(${Math.random()*360},100%,70%)`;
+ctx.beginPath();
+ctx.arc(Math.random()*canvas.width,
+Math.random()*canvas.height,
+2+Math.random()*4,0,6.28);
+ctx.fill();
+}
+},40);
+}
+
+</script>
+
+</body>
+</html>
