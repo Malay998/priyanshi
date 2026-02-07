@@ -115,13 +115,71 @@ opacity:0;
 pointer-events:none;
 }
 
-/* FINAL */
+/* FINAL SCREEN UPGRADE */
 #final{
 display:none;
 position:fixed;
 inset:0;
-background:black;
+background:radial-gradient(circle,#000,#120012,#000);
 justify-content:center;
 align-items:center;
-font-size:60px;
+flex-direction:column;
+overflow:hidden;
+}
+
+/* TITLE */
+.winTitle{
+font-size:70px;
+background:linear-gradient(90deg,#ff0080,#ff4d00,#ffcc00);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow{
+0%,100%{ text-shadow:0 0 20px hotpink; }
+50%{ text-shadow:0 0 60px red; }
+}
+
+/* TYPE TEXT */
+#romanticText{
+margin-top:40px;
+font-size:28px;
+max-width:800px;
+text-align:center;
+line-height:1.6;
+color:#ffd6f5;
+min-height:120px;
+}
+
+/* PHOTO */
+#lovePhoto{
+margin-top:40px;
+width:300px;
+border-radius:25px;
+box-shadow:
+0 0 40px hotpink,
+0 0 80px purple;
+opacity:0;
+transform:scale(.5);
+transition:1.5s;
+}
+
+/* ROSES FLOAT */
+.rose{
+position:fixed;
+font-size:40px;
+pointer-events:none;
+animation:roseFloat linear forwards;
+}
+
+@keyframes roseFloat{
+from{
+transform:translateY(100vh) rotate(0deg);
+opacity:1;
+}
+to{
+transform:translateY(-10vh) rotate(360deg);
+opacity:0;
+}
 }
