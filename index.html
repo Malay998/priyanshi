@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Catch The Love ❤️</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Catch The Love Ultra ❤️</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -10,10 +11,10 @@
 
 <div id="start">
 <h1>❤️ CATCH THE LOVE ❤️</h1>
-<button id="startBtn">START GAME</button>
+<p class="subtitle">Some feelings cannot be explained… only felt.</p>
+<button id="startBtn">START OUR STORY</button>
 </div>
 
-<!-- MASSIVE COUNTER -->
 <div id="megaCounter">
 <div id="scoreNumber">0</div>
 <div id="scoreTarget">/ 15</div>
@@ -23,14 +24,20 @@
 <div id="basket">🧺</div>
 </div>
 
-<div id="finalContent">
-<h1 class="winTitle">YOU WON MY HEART ❤️</h1>
-<div id="romanticText"></div>
-<img id="lovePhoto" src="couple.jpeg" />
-<div id="roseContainer"></div>
+<div id="imageScene">
+<div id="imageGlow"></div>
+<img id="loveImage" src="couple.jpeg">
+<div id="imageParticles"></div>
+<button id="forwardBtn">MOVE FORWARD ❤️</button>
 </div>
 
-<h1>YOU WON ❤️</h1>
+<!-- EMOTIONAL STORY SCENE -->
+<div id="storyScene">
+<div id="storyBox">
+<h2>For You ❤️</h2>
+<p id="storyText"></p>
+<button id="finalBtn">Continue...</button>
+</div>
 </div>
 
 <script src="script.js"></script>

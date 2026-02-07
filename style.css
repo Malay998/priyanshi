@@ -1,12 +1,17 @@
-body{
-margin:0;
-overflow:hidden;
-font-family:Arial, sans-serif;
-background:radial-gradient(circle at center,#1a0010,#000);
-color:white;
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color: transparent;
 }
 
-/* START */
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+background:black;
+color:white;
+overflow:hidden;
+}
+
+/* START SCREEN */
 #start{
 position:fixed;
 inset:0;
@@ -14,25 +19,25 @@ display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-background:black;
+gap:20px;
+background:radial-gradient(circle at center,#120010,#000);
 z-index:10;
 }
 
-button{
-padding:18px 45px;
-font-size:22px;
-border:none;
-border-radius:50px;
-background:linear-gradient(90deg,#ff0080,#ff4d00);
-color:white;
-cursor:pointer;
-box-shadow:0 0 30px #ff0080;
-transition:.3s;
+.subtitle{
+opacity:.7;
+font-size:14px;
 }
 
-button:hover{
-transform:scale(1.15);
-box-shadow:0 0 60px #ff0080;
+button{
+padding:18px 40px;
+font-size:18px;
+border:none;
+border-radius:60px;
+background:linear-gradient(90deg,#ff0080,#ff4d00);
+color:white;
+box-shadow:0 0 30px hotpink;
+backdrop-filter: blur(20px);
 }
 
 /* GAME */
@@ -50,136 +55,74 @@ font-size:70px;
 /* HEART */
 .heart{
 position:absolute;
-font-size:38px;
-filter:drop-shadow(0 0 10px hotpink);
+font-size:40px;
+filter:drop-shadow(0 0 15px hotpink);
 }
 
-/* MASSIVE COUNTER */
+/* COUNTER */
 #megaCounter{
 position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 display:flex;
-align-items:flex-end;
-gap:15px;
+gap:20px;
 pointer-events:none;
 }
 
-/* BIG NUMBER */
 #scoreNumber{
-font-size:160px;
+font-size:120px;
 font-weight:900;
-
-background:linear-gradient(180deg,#ff0080,#ffcc00,#00ffe0);
+background:linear-gradient(#ff0080,#ffcc00,#00ffe0);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
-
-text-shadow:
-0 0 20px #ff0080,
-0 0 40px #ff0080,
-0 0 80px #ff0080;
-
-animation: counterIdle 3s ease-in-out infinite;
 }
 
-#scoreTarget{
-font-size:60px;
-opacity:.8;
-margin-bottom:30px;
-}
-
-/* IDLE FLOAT */
-@keyframes counterIdle{
-0%,100%{ transform:translateY(0px); }
-50%{ transform:translateY(-10px); }
-}
-
-/* SCORE HIT ANIMATION */
-.counterHit{
-animation: counterHitAnim .35s ease;
-}
-
-@keyframes counterHitAnim{
-0%{ transform:scale(1); }
-50%{ transform:scale(1.4); }
-100%{ transform:scale(1); }
-}
-
-/* SCREEN FLASH */
-#flash{
-position:fixed;
-inset:0;
-background:white;
-opacity:0;
-pointer-events:none;
-}
-
-/* FINAL SCREEN UPGRADE */
-#final{
+/* IMAGE SCENE */
+#imageScene{
 display:none;
 position:fixed;
 inset:0;
-background:radial-gradient(circle,#000,#120012,#000);
+background:black;
 justify-content:center;
 align-items:center;
 flex-direction:column;
-overflow:hidden;
 }
 
-/* TITLE */
-.winTitle{
-font-size:70px;
-background:linear-gradient(90deg,#ff0080,#ff4d00,#ffcc00);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-animation:pulseGlow 2s infinite;
-}
-
-@keyframes pulseGlow{
-0%,100%{ text-shadow:0 0 20px hotpink; }
-50%{ text-shadow:0 0 60px red; }
-}
-
-/* TYPE TEXT */
-#romanticText{
-margin-top:40px;
-font-size:28px;
-max-width:800px;
-text-align:center;
-line-height:1.6;
-color:#ffd6f5;
-min-height:120px;
-}
-
-/* PHOTO */
-#lovePhoto{
-margin-top:40px;
-width:300px;
+#loveImage{
+width:85vw;
+max-width:380px;
 border-radius:25px;
-box-shadow:
-0 0 40px hotpink,
-0 0 80px purple;
 opacity:0;
 transform:scale(.5);
-transition:1.5s;
+box-shadow:
+0 0 40px hotpink,
+0 0 80px purple,
+0 0 120px red;
 }
 
-/* ROSES FLOAT */
-.rose{
+/* STORY SCENE */
+#storyScene{
+display:none;
 position:fixed;
-font-size:40px;
-pointer-events:none;
-animation:roseFloat linear forwards;
+inset:0;
+background:linear-gradient(180deg,#000,#1a0014);
+justify-content:center;
+align-items:center;
+padding:20px;
 }
 
-@keyframes roseFloat{
-from{
-transform:translateY(100vh) rotate(0deg);
-opacity:1;
+#storyBox{
+max-width:500px;
+background:rgba(255,255,255,.05);
+padding:30px;
+border-radius:25px;
+backdrop-filter: blur(30px);
+box-shadow:0 0 60px rgba(255,0,100,.4);
 }
-to{
-transform:translateY(-10vh) rotate(360deg);
-opacity:0;
-}
+
+#storyText{
+line-height:1.7;
+font-size:18px;
+opacity:.9;
 }
