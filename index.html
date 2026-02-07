@@ -45,7 +45,7 @@ position:absolute;
 font-size:32px;
 }
 
-/* LEFT MISS COUNTER */
+/* LEFT MISS */
 #missBox{
 position:fixed;
 top:20px;
@@ -53,7 +53,7 @@ left:20px;
 font-size:22px;
 }
 
-/* RIGHT CATCH COUNTER */
+/* RIGHT CATCH */
 #catchBox{
 position:fixed;
 top:20px;
@@ -61,7 +61,41 @@ right:20px;
 font-size:22px;
 }
 
-/* Final Screen */
+/* CENTER COUNTER */
+#centerCounter{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+font-size:40px;
+font-weight:bold;
+
+background:linear-gradient(90deg,#ff0080,#ff8c00,#40e0d0,#ff0080);
+background-size:300%;
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+animation: glowMove 6s linear infinite,
+pulse 1.2s ease-in-out infinite;
+
+text-shadow:
+0 0 10px rgba(255,255,255,.6),
+0 0 20px rgba(255,0,150,.7),
+0 0 35px rgba(255,0,200,.8);
+}
+
+@keyframes glowMove{
+0%{ background-position:0%; }
+100%{ background-position:300%; }
+}
+
+@keyframes pulse{
+0%,100%{ transform:translateX(-50%) scale(1); }
+50%{ transform:translateX(-50%) scale(1.15); }
+}
+
+/* FINAL SCREEN */
 #final{
 display:none;
 position:fixed;
@@ -70,13 +104,73 @@ background:black;
 justify-content:center;
 align-items:center;
 flex-direction:column;
+gap:20px;
 }
 
-#final img{
+/* BUTTONS */
+#final button{
+padding:15px 30px;
+margin:10px;
+font-size:18px;
+border:none;
+border-radius:20px;
+background:#ff4d88;
+color:white;
+cursor:pointer;
+box-shadow:0 0 20px pink;
+}
+
+/* ROSE SCENE */
+#roseScene{
+display:none;
+flex-direction:column;
+align-items:center;
+gap:20px;
+}
+
+#rose{
+font-size:120px;
+opacity:0;
+transform:scale(0);
+}
+
+#photoPop{
 width:80%;
-max-width:380px;
-border-radius:25px;
-box-shadow:0 0 60px pink;
+max-width:320px;
+border-radius:20px;
+box-shadow:0 0 50px pink;
+opacity:0;
+transform:scale(.3);
+}
+
+/* ROSE ANIMATION */
+.roseAnimate{
+animation:roseGrow 2s ease forwards,
+roseGlow 2s infinite alternate;
+}
+
+@keyframes roseGrow{
+to{
+opacity:1;
+transform:scale(1.3) rotate(10deg);
+}
+}
+
+@keyframes roseGlow{
+from{ filter:drop-shadow(0 0 10px pink); }
+to{ filter:drop-shadow(0 0 40px red); }
+}
+
+/* PHOTO POP */
+.photoAnimate{
+animation:photoPop 1.5s ease forwards;
+}
+
+@keyframes photoPop{
+to{
+opacity:1;
+transform:scale(1);
+}
 }
 </style>
 </head>
@@ -86,14 +180,13 @@ box-shadow:0 0 60px pink;
 <!-- START -->
 <div id="start">
 <h1>❤️ Catch The Love ❤️</h1>
-<p>Catch 15 Hearts To Win</p>
+<p>Reach 15 To Win</p>
 <button onclick="startGame()">Start</button>
 </div>
 
-<!-- LEFT MISS -->
+<!-- SCORES -->
 <div id="missBox">Miss ❌: <span id="miss">0</span></div>
-
-<!-- RIGHT CATCH -->
+<div id="centerCounter"><span id="current">0</span> / 15</div>
 <div id="catchBox">Catch 💖: <span id="catch">0</span></div>
 
 <!-- GAME -->
@@ -103,21 +196,32 @@ box-shadow:0 0 60px pink;
 
 <!-- FINAL -->
 <div id="final">
+
 <h2>❤️ YOU + ME ❤️</h2>
-<img src="couple.jpeg">
+
+<div id="questionBox" style="display:none;">
+<h2>Do you wanna be mine forever? ❤️</h2>
+<button onclick="answerYes()">YES 💖</button>
+<button onclick="answerNo()">NO 😌</button>
+</div>
+
+<div id="roseScene">
+<div id="rose">🌹</div>
+<img id="photoPop" src="couple.jpeg">
+<h2 id="roseMsg"></h2>
+</div>
+
 </div>
 
 <script>
 
 let basket=document.getElementById("basket");
-
 let catchScore=0;
 let missScore=0;
 let target=15;
-
 let gameLoop;
 
-/* MOVE BASKET */
+/* MOVE */
 document.addEventListener("mousemove",move);
 document.addEventListener("touchmove",(e)=>{
 move(e.touches[0]);
@@ -127,7 +231,7 @@ function move(e){
 basket.style.left=(e.clientX-40)+"px";
 }
 
-/* START GAME */
+/* START */
 function startGame(){
 document.getElementById("start").style.display="none";
 gameLoop=setInterval(spawnHeart,700);
@@ -147,7 +251,6 @@ document.getElementById("game").appendChild(heart);
 
 let caught=false;
 
-/* FALL */
 let fall=setInterval(()=>{
 
 heart.style.top=(heart.offsetTop+4)+"px";
@@ -175,10 +278,11 @@ clearInterval(fall);
 },16);
 }
 
-/* UPDATE UI */
+/* UI */
 function updateUI(){
 document.getElementById("catch").innerText=catchScore;
 document.getElementById("miss").innerText=missScore;
+document.getElementById("current").innerText=catchScore;
 }
 
 /* COLLISION */
@@ -194,17 +298,56 @@ ar.left>br.right
 );
 }
 
-/* WIN */
+/* WIN CHECK */
 function checkWin(){
 if(catchScore>=target){
 winGame();
 }
 }
 
+/* WIN */
 function winGame(){
 clearInterval(gameLoop);
 document.getElementById("final").style.display="flex";
+
+setTimeout(()=>{
+document.getElementById("questionBox").style.display="block";
+},1500);
+
 startFireworks();
+}
+
+/* YES */
+function answerYes(){
+document.getElementById("questionBox").style.display="none";
+
+let roseScene=document.getElementById("roseScene");
+roseScene.style.display="flex";
+
+let rose=document.getElementById("rose");
+let photo=document.getElementById("photoPop");
+
+document.getElementById("roseMsg").innerText="Forever Us ❤️";
+
+rose.classList.add("roseAnimate");
+
+setTimeout(()=>{
+photo.classList.add("photoAnimate");
+},1800);
+}
+
+/* NO */
+function answerNo(){
+document.getElementById("questionBox").style.display="none";
+
+let roseScene=document.getElementById("roseScene");
+roseScene.style.display="flex";
+
+document.getElementById("rose").style.opacity=1;
+document.getElementById("rose").style.transform="scale(1)";
+
+document.getElementById("roseMsg").innerText=
+"You still deserve a rose baby girl 🌹";
 }
 
 /* FIREWORKS */
