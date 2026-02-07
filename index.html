@@ -2,15 +2,16 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Love Quest Ultimate</title>
+<title>Catch The Love ❤️</title>
 
 <style>
 body{
 margin:0;
 overflow:hidden;
 font-family:Arial;
-background:black;
+background:linear-gradient(180deg,#ff4d6d,#8b0033);
 color:white;
+text-align:center;
 }
 
 /* Start Screen */
@@ -25,34 +26,42 @@ background:black;
 z-index:10;
 }
 
-/* Game */
+/* Game Area */
 #game{
 position:fixed;
 inset:0;
 }
 
-/* Player */
-#player{
+/* Basket */
+#basket{
 position:absolute;
-font-size:40px;
+bottom:20px;
+font-size:55px;
 }
 
-/* Objects */
-.obj{
+/* Hearts */
+.heart{
 position:absolute;
-font-size:30px;
+font-size:32px;
 }
 
-/* UI */
-#ui{
+/* LEFT MISS COUNTER */
+#missBox{
 position:fixed;
-top:10px;
-left:10px;
-font-size:20px;
-z-index:5;
+top:20px;
+left:20px;
+font-size:22px;
 }
 
-/* Final */
+/* RIGHT CATCH COUNTER */
+#catchBox{
+position:fixed;
+top:20px;
+right:20px;
+font-size:22px;
+}
+
+/* Final Screen */
 #final{
 display:none;
 position:fixed;
@@ -64,122 +73,112 @@ flex-direction:column;
 }
 
 #final img{
-width:85%;
-max-width:400px;
+width:80%;
+max-width:380px;
 border-radius:25px;
-animation:zoom 3s ease forwards;
-}
-
-@keyframes zoom{
-from{ transform:scale(.5); opacity:0; }
-to{ transform:scale(1); opacity:1; }
-}
-
-/* Shake */
-.shake{
-animation:shake .3s;
-}
-@keyframes shake{
-0%{ transform:translate(0,0); }
-25%{ transform:translate(6px,0); }
-50%{ transform:translate(-6px,0); }
-75%{ transform:translate(6px,0); }
-100%{ transform:translate(0,0); }
+box-shadow:0 0 60px pink;
 }
 </style>
 </head>
 
 <body>
 
+<!-- START -->
 <div id="start">
-<h1>❤️ LOVE QUEST ULTIMATE ❤️</h1>
-<button onclick="startGame()">START</button>
+<h1>❤️ Catch The Love ❤️</h1>
+<p>Catch 15 Hearts To Win</p>
+<button onclick="startGame()">Start</button>
 </div>
 
-<div id="ui">
-Score: <span id="score">0</span>
-<br>
-Lives: <span id="lives">3</span>
-</div>
+<!-- LEFT MISS -->
+<div id="missBox">Miss ❌: <span id="miss">0</span></div>
 
+<!-- RIGHT CATCH -->
+<div id="catchBox">Catch 💖: <span id="catch">0</span></div>
+
+<!-- GAME -->
 <div id="game">
-<div id="player">💖</div>
+<div id="basket">🧺</div>
 </div>
 
+<!-- FINAL -->
 <div id="final">
-<h2>❤️ FOREVER ❤️</h2>
-<img src="couple.jpg">
+<h2>❤️ YOU + ME ❤️</h2>
+<img src="couple.jpeg">
 </div>
 
 <script>
 
-let player=document.getElementById("player");
-let score=0;
-let lives=3;
-let speed=2;
+let basket=document.getElementById("basket");
 
-/* PLAYER CONTROL TOUCH + MOUSE */
+let catchScore=0;
+let missScore=0;
+let target=15;
+
+let gameLoop;
+
+/* MOVE BASKET */
 document.addEventListener("mousemove",move);
 document.addEventListener("touchmove",(e)=>{
 move(e.touches[0]);
 });
 
 function move(e){
-player.style.left=(e.clientX-20)+"px";
-player.style.top=(e.clientY-20)+"px";
+basket.style.left=(e.clientX-40)+"px";
 }
 
-/* START */
+/* START GAME */
 function startGame(){
 document.getElementById("start").style.display="none";
-setInterval(spawnObj,800);
+gameLoop=setInterval(spawnHeart,700);
 }
 
-/* SPAWN OBJECT */
-function spawnObj(){
+/* SPAWN HEART */
+function spawnHeart(){
 
-let obj=document.createElement("div");
-obj.className="obj";
+let heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="💖";
 
-/* Type */
-let type=Math.random();
+heart.style.left=Math.random()*window.innerWidth+"px";
+heart.style.top="-40px";
 
-if(type<0.65){
-obj.innerHTML="💖";
-obj.dataset.type="good";
-}
-else if(type<0.9){
-obj.innerHTML="💔";
-obj.dataset.type="bad";
-}
-else{
-obj.innerHTML="🛡";
-obj.dataset.type="shield";
-}
+document.getElementById("game").appendChild(heart);
 
-obj.style.left=Math.random()*window.innerWidth+"px";
-obj.style.top="-40px";
-
-document.getElementById("game").appendChild(obj);
+let caught=false;
 
 /* FALL */
 let fall=setInterval(()=>{
 
-obj.style.top=(obj.offsetTop+speed)+"px";
+heart.style.top=(heart.offsetTop+4)+"px";
 
-/* COLLISION */
-if(collide(player,obj)){
-handleHit(obj.dataset.type);
-obj.remove();
+/* CATCH */
+if(collide(basket,heart)){
+caught=true;
+catchScore++;
+updateUI();
+heart.remove();
 clearInterval(fall);
+checkWin();
 }
 
-if(obj.offsetTop>window.innerHeight){
-obj.remove();
+/* MISS */
+if(heart.offsetTop>window.innerHeight){
+if(!caught){
+missScore++;
+updateUI();
+}
+heart.remove();
 clearInterval(fall);
 }
 
 },16);
+}
+
+/* UPDATE UI */
+function updateUI(){
+document.getElementById("catch").innerText=catchScore;
+document.getElementById("miss").innerText=missScore;
 }
 
 /* COLLISION */
@@ -195,60 +194,21 @@ ar.left>br.right
 );
 }
 
-/* HIT HANDLE */
-function handleHit(type){
-
-if(type=="good"){
-score++;
-}
-else if(type=="bad"){
-lives--;
-shakeScreen();
-slowMo();
-}
-else if(type=="shield"){
-lives++;
-}
-
-updateUI();
-checkGame();
-}
-
-/* UI */
-function updateUI(){
-scoreEl.innerText=score;
-livesEl.innerText=lives;
-}
-
-/* SHAKE */
-function shakeScreen(){
-document.body.classList.add("shake");
-setTimeout(()=>document.body.classList.remove("shake"),300);
-}
-
-/* SLOW MOTION */
-function slowMo(){
-speed=1;
-setTimeout(()=>speed=2,1200);
-}
-
-/* GAME END */
-function checkGame(){
-if(lives<=0){
-location.reload();
-}
-if(score>=25){
-win();
+/* WIN */
+function checkWin(){
+if(catchScore>=target){
+winGame();
 }
 }
 
-function win(){
+function winGame(){
+clearInterval(gameLoop);
 document.getElementById("final").style.display="flex";
-startParticles();
+startFireworks();
 }
 
-/* PARTICLES */
-function startParticles(){
+/* FIREWORKS */
+function startFireworks(){
 let canvas=document.createElement("canvas");
 document.body.appendChild(canvas);
 
@@ -261,7 +221,7 @@ setInterval(()=>{
 ctx.fillStyle="rgba(0,0,0,.2)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-for(let i=0;i<10;i++){
+for(let i=0;i<8;i++){
 ctx.fillStyle=`hsl(${Math.random()*360},100%,70%)`;
 ctx.beginPath();
 ctx.arc(Math.random()*canvas.width,
